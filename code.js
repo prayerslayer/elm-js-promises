@@ -1,10 +1,23 @@
+var apikey = "44141304bae729be6f9fc4c9173e987f";
+
+if ( ! String.prototype.trim ) {
+	String.prototype.trim=function(){return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');};
+}
+
 //get photos for tag
 function requestTag( tag ) {
+	tag = tag.trim();
 	console.log( "requesting tag " + tag + "..." );
 	var defer = jQuery.Deferred();
-	$.get( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=ca0c4e9e5c12ae69c7a7e489c56670a7&format=json&nojsoncallback=1&tags=" + tag, function( list ) {
-		console.log( "got photos for tag " + tag );
-		defer.resolve( list.photos.photo );
+	$.get( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + apikey + "&format=json&nojsoncallback=1&tags=" + tag, function( list ) {
+		if ( list.stat === "ok" ) {
+			//received some 2xx code
+			console.log( "got photos for tag " + tag );
+			defer.resolve( list.photos.photo );
+		}
+		else {
+			alert( list.message );
+		}
 	});
 	return defer.promise();
 }
@@ -22,7 +35,7 @@ function requestOneFrom( tag_defer ) {
 		var photo = list[index];
 		console.log( photo );
 		//request sizes
-		$.get( "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=ca0c4e9e5c12ae69c7a7e489c56670a7&format=json&nojsoncallback=1&photo_id=" + photo.id, function( sizes ) {
+		$.get( "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + apikey + "&format=json&nojsoncallback=1&photo_id=" + photo.id, function( sizes ) {
 			console.log( "got sizes for photo" );
 			//kaizer sizes
 			console.log( sizes.sizes.size );
