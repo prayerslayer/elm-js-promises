@@ -8,6 +8,8 @@
 		console.log( "requesting tag " + tag + "..." );
 		var defer = jQuery.Deferred();
 		$.get( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=" + apikey + "&format=json&nojsoncallback=1&tags=" + tag, function( list ) {
+			if ( typeof( list ) === "string" )
+				list = JSON.parse( list );
 			if ( list.stat === "ok" ) {
 				//received some 2xx code
 				console.log( "got photos for tag " + tag );
@@ -36,6 +38,8 @@
 			$.get( "http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=" + apikey + "&format=json&nojsoncallback=1&photo_id=" + photo.id, function( sizes ) {
 				console.log( "got sizes for photo" );
 				//kaizer sizes
+				if ( typeof( sizes ) === "string" )
+					sizes = JSON.parse( sizes );
 				console.log( sizes.sizes.size );
 				defer.resolve( sizes.sizes.size );
 			});
